@@ -1,0 +1,89 @@
+From 0e014dae3299153224038774e76b3681bd2067ff Mon Sep 17 00:00:00 2001
+From: Teja Sophista <tejanium@yahoo.com>
+Date: Wed, 29 Jan 2020 15:54:23 +0000
+Subject: [PATCH] minimum reproduction
+
+---
+ app/controllers/application_controller.rb | 8 ++++++++
+ app/models/post.rb                        | 5 +++++
+ app/models/user.rb                        | 7 +++++++
+ config/environments/development.rb        | 2 ++
+ config/initializers/locales.rb            | 3 +++
+ config/routes.rb                          | 2 ++
+ 6 files changed, 27 insertions(+)
+ create mode 100644 app/models/post.rb
+ create mode 100644 app/models/user.rb
+ create mode 100644 config/initializers/locales.rb
+
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index 09705d1..acabdfd 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -1,2 +1,10 @@
+ class ApplicationController < ActionController::Base
++  def index
++    hellos = [
++      Post.hello,
++      User.hello
++    ]
++
++    render plain: hellos.join("\n")
++  end
+ end
+diff --git a/app/models/post.rb b/app/models/post.rb
+new file mode 100644
+index 0000000..2ae19a7
+--- /dev/null
++++ b/app/models/post.rb
+@@ -0,0 +1,5 @@
++class Post
++  # def self.hello
++  #   "hello from Post"
++  # end
++end
+diff --git a/app/models/user.rb b/app/models/user.rb
+new file mode 100644
+index 0000000..1621a2d
+--- /dev/null
++++ b/app/models/user.rb
+@@ -0,0 +1,7 @@
++class User
++  SUPPORTED_LANGUAGES = [:en, :es]
++
++  # def self.hello
++  #   "hello from User"
++  # end
++end
+diff --git a/config/environments/development.rb b/config/environments/development.rb
+index 66df51f..de9658c 100644
+--- a/config/environments/development.rb
++++ b/config/environments/development.rb
+@@ -59,4 +59,6 @@ Rails.application.configure do
+   # Use an evented file watcher to asynchronously detect changes in source code,
+   # routes, locales, etc. This feature depends on the listen gem.
+   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
++
++  config.active_support.deprecation = :raise
+ end
+diff --git a/config/initializers/locales.rb b/config/initializers/locales.rb
+new file mode 100644
+index 0000000..c920ee3
+--- /dev/null
++++ b/config/initializers/locales.rb
+@@ -0,0 +1,3 @@
++require "user"
++
++I18n.available_locales = User::SUPPORTED_LANGUAGES
+diff --git a/config/routes.rb b/config/routes.rb
+index c06383a..ed72d55 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -1,3 +1,5 @@
+ Rails.application.routes.draw do
+   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
++
++  root "application#index"
+ end
+-- 
+2.25.0
+
